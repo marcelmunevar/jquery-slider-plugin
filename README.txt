@@ -1,5 +1,7 @@
 //v1.0
 //Plugin makes slider that slides left and right.
+//see it in action on benjamin moore's mobile website
+//http://m.benjaminmoore.com/paint-colors/color/opal
 
 //example
 //$(outerWrapper).slider( leftButton, rightButton,{'numChildrenPerPage'	:	'8', 'clipEdge'	:	'true'})
