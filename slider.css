@@ -1,47 +1,42 @@
 .gallery
 {
-	height:138px; /* Height of the backdrop for the gallery */
-	background-color:#fdfdfd; /* background color of the backdrop for the gallery */
+	height:138px; /* adjust height of gallery */
+	background-color:#fdfdfd; /* set background color of gallery */
+	border:1px solid #ccc; /* set desired border */
 	position:relative;
 	overflow:hidden;
-	border:1px solid #ccc;
 }
 .outerWrapper
 {
-	padding:12px 0; /* Distance from the top (must be padding to show box-shadow) */
+	padding:11.5px 0; /* adjust distance from top here */
 	margin:auto;
 	overflow:hidden;
 }
 .outerWrapper img 
 {
-	margin-right:23px; /* margin is detected and calculated into width of inner wrapper */
-	padding:3px; /* padding is detected and calculated into width of inner wrapper - this is for the border */
-	box-shadow:0 0 8px #000000; /* you need to add left-padding on the inner wrapper so that you can see the box-shadow */
-	background-color:#fff; /* this is the border color for the images */
+	margin-right:40px; /* adjust for space between images */
+	box-shadow:0 0 8px #000000; /* adjust box-shadow */
+	border:3px solid #fff; /* adjust border (gives polaroid effect) */
 	visibility:hidden;
 	float:left;	
 }
 .innerWrapper
 {
-	padding-left:11.5px; /* padding is here so that you can see the box-shadow on the images */
 	position:relative;
 }
 .leftButton, .rightButton
 {
-	top:58px; /* distance from top for left and right buttons */
-	left:18px; /* distance from left for left button */
+	left:18px; /* adjust distance from edge for buttons */
+	background-image:url('img/arrows.png'); /* you can set any image you want for this. keep in mind it's a sprite. */
+	width:28px; /* You may need to change this if you change the background image */
+	height:28px; /* You may need to change this if you change the background image */
 	visibility:hidden;
 	cursor:pointer;
-	background-image:url('img/arrows.png');
-	width:28px;
-	height:28px;
 	background-position:left;
 	position:absolute;
 }
 .rightButton
 {
-	right:18px; /* distance from right for right button */
 	background-position:right;
 	left:inherit;
-
 }
