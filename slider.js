@@ -8,7 +8,8 @@
 			// Create some defaults, extending them with any options that were provided
 			var settings = $.extend( {
 				'numChildrenPerPage'	:	'1',
-				'clipEdge'	:	'true'
+				'clipEdge'	:	true,
+				'buttonsOutside'	:	false
 			}, options);
 			
 			//jquery objects
@@ -23,7 +24,14 @@
 			var imgMargin = parseFloat(imgObjects.css("margin-right"));
 			
 			//spaceAvailable
-			var distanceFromLeft = parseFloat(leftButton.css("left"))+parseFloat(leftButton.css("width"));
+			if(!settings.buttonsOutside)
+			{
+				var distanceFromLeft = parseFloat(leftButton.css("left"))+parseFloat(leftButton.css("width"));
+			}
+			else
+			{
+				var distanceFromLeft = 0;
+			}
 			var spaceAvailable = ( distanceFromLeft*2 - parseFloat(galleryDiv.width()) )*-1;
 			
 			
@@ -86,11 +94,15 @@
 			{
 				innerDiv.css("padding-left", imgMargin/2);
 			}
-			var a = galleryDiv.height()/2;
-			var b = leftButton.height()/2;
-			leftButton.css("top", (a)-(b));
-			rightButton.css("top", (a)-(b));
-			rightButton.css("right", leftButton.css("left"));					
+			
+			if(!settings.buttonsOutside)
+			{
+				var a = galleryDiv.height()/2;
+				var b = leftButton.height()/2;
+				leftButton.css("top", (a)-(b));
+				rightButton.css("top", (a)-(b));
+				rightButton.css("right", leftButton.css("left"));	
+			}
 		
 			//activate buttons
 			updateButtonStatus(currentPage, numPages, leftButton, rightButton);  
@@ -205,7 +217,7 @@
 			{
 				//deactivate buttons
 				buttonSwitch("swap");
-				if(clipEdge == "true")
+				if(clipEdge)
 				{
 					//if second to last page and panning right		
 					if(currentPage == numPages-1 && pages > 0)
