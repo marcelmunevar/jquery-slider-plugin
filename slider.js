@@ -1,13 +1,9 @@
 (function( $ ){
-
-	$.fn.slider = function( leftButton, rightButton,  options) {  
-	
-		
-		
+	$.fn.slider = function( leftButton, rightButton,  options) {
 		return this.each(function() {
 			// Create some defaults, extending them with any options that were provided
 			var settings = $.extend( {
-				'numChildrenPerPage'	:	'1',
+				'numChildrenPerPage'	:	'responsive',
 				'clipEdge'	:	true,
 				'buttonsOutside'	:	false
 			}, options);
