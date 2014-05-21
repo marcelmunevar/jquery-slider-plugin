@@ -3,78 +3,69 @@
 		return this.each(function() {
 			// Create some defaults, extending them with any options that were provided
 			var settings = $.extend( {
-				'numChildrenPerPage'	:	'responsive',
-				'clipEdge'	:	true,
-				'buttonsOutside'	:	false
+				'PageSize'	:	'responsive',
+				'Whitespace'	:	false,
+				'ButtonsCSS'	:	true
 			}, options);
 			
-			//jquery objects
+			//vars
 			var outerDiv = $(this);
 			var innerDiv = outerDiv.children();
 			var galleryDiv = outerDiv.parent();
 			var tiles = innerDiv.children();
-			var imgObjects = tiles.children();
-			
-			//misc
 			var numButtons = tiles.length;
-			var imgMargin = parseFloat(imgObjects.css("margin-right"));
-			
-			//spaceAvailable
-			if(!settings.buttonsOutside)
-			{
-				var distanceFromLeft = parseFloat(leftButton.css("left"))+parseFloat(leftButton.css("width"));
-			}
-			else
-			{
-				var distanceFromLeft = 0;
-			}
-			var spaceAvailable = ( distanceFromLeft*2 - parseFloat(galleryDiv.width()) )*-1;
-			
+			var imgObjects = tiles.children();
+			var singleImgObject = imgObjects.first();
+			var imgMargin = parseFloat(singleImgObject.css("margin-right"));
 			
 			//widthPerTile
-			var widthPerTile = 0;
-			var singleTile = imgObjects.first();
-			widthPerTile += singleTile.width();
-			widthPerTile += parseFloat(singleTile.css("margin-right"));
-			widthPerTile += parseFloat(singleTile.css("border-left-width"));
-			widthPerTile += parseFloat(singleTile.css("border-right-width"));
+			var widthPerTile = 0;			
+			widthPerTile += singleImgObject.width();
+			widthPerTile += imgMargin;
+			widthPerTile += parseFloat(singleImgObject.css("border-left-width"));
+			widthPerTile += parseFloat(singleImgObject.css("border-right-width"));			
 			
-			//dynamic variables
+			//dynamic vars
 			var responsiveSwitch = false;
 			var buttonSwitch = buttons();  //button switch is encapsulated in a closure
 			var currentPage = 1;
-			var widthOfOuter = 0;
-			var widthOfInner = 0;
+			var windowWidth = 0;
+			var slideWidth = 0;
 
 			//check for responsive or auto
-			if ( $.trim(settings.numChildrenPerPage.toLowerCase()) == "responsive" )
+			//calculate the width of innerDiv and outerDiv
+			if ( $.trim(settings.PageSize.toLowerCase()) == "responsive" )
 			{
 				responsiveSwitch = true;
 			}
-			if ( $.trim(settings.numChildrenPerPage.toLowerCase()) == "auto" || $.trim(settings.numChildrenPerPage.toLowerCase()) == "responsive")
+			if ( $.trim(settings.PageSize.toLowerCase()) == "auto" || $.trim(settings.PageSize.toLowerCase()) == "responsive")
 			{
-				var returnVars = responsiveCalculations(widthPerTile, spaceAvailable, numButtons);
-				settings.numChildrenPerPage = returnVars[1];
-			}
-			
-			//numPages
-			var numPages = Math.ceil(numButtons/settings.numChildrenPerPage);
-
-			//calculate the width of innerDiv and outerDiv
-			for(i=0; i < numButtons; i++)
-			{
-				widthOfInner += widthPerTile;
-				//set widthOfOuter after first page is calculated
-				if( i == settings.numChildrenPerPage-1 )
+				//spaceAvailable
+				if(settings.ButtonsCSS)
 				{
-					widthOfOuter = widthOfInner;
+					var distanceFromLeft = parseFloat(leftButton.css("left"))+parseFloat(leftButton.css("width"));
+					var spaceAvailable = galleryDiv.width() - distanceFromLeft*2;
 				}
+				else
+				{
+					var distanceFromLeft = 0;
+					var spaceAvailable = galleryDiv.width();
+				}
+				var returnVars = responsiveCalculations(widthPerTile, spaceAvailable, numButtons);
+				windowWidth = returnVars[0];
+				settings.PageSize = returnVars[1];
 			}
-			
+			else
+			{
+				windowWidth = widthPerTile*settings.PageSize;
+			}
+			var numPages = Math.ceil(numButtons/settings.PageSize);
+			slideWidth = windowWidth*numPages;
+			var innerPanDistance = numButtons*widthPerTile;			
 			
 			//set width for inner and outer
-			outerDiv.css("width",widthOfOuter);
-			innerDiv.css("width",widthOfInner);
+			outerDiv.css("width",windowWidth);
+			innerDiv.css("width",slideWidth);
 			
 			//calculate and set some css values
 			if(imgMargin == 0)
@@ -91,7 +82,7 @@
 				innerDiv.css("padding-left", imgMargin/2);
 			}
 			
-			if(!settings.buttonsOutside)
+			if(settings.ButtonsCSS)
 			{
 				var a = galleryDiv.height()/2;
 				var b = leftButton.height()/2;
@@ -103,11 +94,11 @@
 			//activate buttons
 			updateButtonStatus(currentPage, numPages, leftButton, rightButton);  
 			leftButton.click(function() {
-				currentPage = pan(currentPage, numPages, -1, buttonSwitch, widthOfOuter, widthOfInner, innerDiv, settings.clipEdge);
+				currentPage = pan(currentPage, numPages, -1, buttonSwitch, windowWidth, innerPanDistance, innerDiv, settings.Whitespace);
 				updateButtonStatus(currentPage,numPages, leftButton, rightButton);        
 			});
 			rightButton.click(function() {
-				currentPage = pan(currentPage, numPages, 1, buttonSwitch, widthOfOuter, widthOfInner, innerDiv, settings.clipEdge);
+				currentPage = pan(currentPage, numPages, 1, buttonSwitch, windowWidth, innerPanDistance, innerDiv, settings.Whitespace);
 				updateButtonStatus(currentPage,numPages, leftButton, rightButton);        
 			});     
 			
@@ -115,15 +106,15 @@
 			if ( responsiveSwitch )
 			{
 				$(window).resize(function(){
-					spaceAvailable = ( distanceFromLeft*2 - parseFloat(galleryDiv.width()) )*-1;
-					if ( widthOfOuter > spaceAvailable  || widthOfOuter+widthPerTile < spaceAvailable )
+					spaceAvailable = galleryDiv.width() - distanceFromLeft*2;
+					if ( windowWidth > spaceAvailable  || windowWidth+widthPerTile < spaceAvailable )
 					{
 						var returnVars = responsiveCalculations(widthPerTile, spaceAvailable, numButtons )
-						widthOfOuter = returnVars[0];
-						settings.numChildrenPerPage = returnVars[1];
-						outerDiv.css("width",widthOfOuter);
-						innerDiv.css("left","0");
-						numPages = Math.ceil(numButtons/settings.numChildrenPerPage);
+						windowWidth = returnVars[0];
+						settings.PageSize = returnVars[1];
+						numPages = Math.ceil(numButtons/settings.PageSize);
+						outerDiv.css("width",windowWidth);
+						innerDiv.css("left","0").css("width",windowWidth*numPages);
 						currentPage = 1;
 						updateButtonStatus(currentPage, numPages, leftButton, rightButton);
 					}
@@ -139,25 +130,25 @@
 		
 		function responsiveCalculations(widthPerTile, spaceAvailable, numButtons)
 		{
-			var widthOfOuter = 0;
+			var windowWidth = 0;
 			var numChildrenPerPage = 0;
 			
-			//calculate numChildrenPerPage and widthOfOuter
-			while ( widthOfOuter+widthPerTile <= spaceAvailable &&  numChildrenPerPage <= numButtons-1 )
+			//calculate numChildrenPerPage and windowWidth
+			while ( windowWidth+widthPerTile <= spaceAvailable &&  numChildrenPerPage <= numButtons-1 )
 			{
-				widthOfOuter += widthPerTile;
+				windowWidth += widthPerTile;
 				numChildrenPerPage += 1;
 			}
 						
 			//do not allow 0 tiles
-			if (widthOfOuter == 0)
+			if (windowWidth == 0)
 			{
-				widthOfOuter += widthPerTile;
+				windowWidth += widthPerTile;
 				numChildrenPerPage += 1;
 			}
 			
 			var returnVars = Array();
-			returnVars[0] = widthOfOuter;
+			returnVars[0] = windowWidth;
 			returnVars[1] = numChildrenPerPage;
 			return returnVars;
 		}
@@ -207,18 +198,19 @@
 		}
 		
 		//when a user clicks a button
-		function pan(currentPage, numPages, pages, buttonSwitch, widthOfOuter, widthOfInner, innerDiv, clipEdge)
+		function pan(currentPage, numPages, pages, buttonSwitch, windowWidth, slideWidth, innerDiv, clipEdge)
 		{
+						
 			if(buttonSwitch())
 			{
 				//deactivate buttons
 				buttonSwitch("swap");
-				if(clipEdge)
+				if(!clipEdge)
 				{
 					//if second to last page and panning right		
 					if(currentPage == numPages-1 && pages > 0)
 					{
-							distance = 0-widthOfInner+widthOfOuter;
+							distance = windowWidth-slideWidth;
 					}
 					//if second page and panning left
 					else if(currentPage == 2 && pages < 0)
@@ -227,12 +219,12 @@
 					}
 					else
 					{
-							distance = "-="+(widthOfOuter)*pages+"px";
+							distance = "-="+(windowWidth)*pages+"px";
 					}
 				}
 				else
 				{
-					distance = "-="+(widthOfOuter)*pages+"px";
+					distance = "-="+(windowWidth)*pages+"px";
 				}
 				
 				//set newPage
