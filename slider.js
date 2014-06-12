@@ -114,7 +114,7 @@
 						settings.PageSize = returnVars[1];
 						numPages = Math.ceil(numButtons/settings.PageSize);
 						outerDiv.css("width",windowWidth);
-						innerDiv.css("left","0").css("width",windowWidth*numPages);
+						innerDiv.css("margin-left","0").css("width",windowWidth*numPages);
 						currentPage = 1;
 						updateButtonStatus(currentPage, numPages, leftButton, rightButton);
 					}
@@ -231,7 +231,7 @@
 				newPage = currentPage+pages;
 				
 				//animate left at calculated distance at a slow speed, reactivate buttons on completion
-				innerDiv.animate({"left": distance}, "slow",	function(){ buttonSwitch("swap"); });
+				innerDiv.animate({"margin-left": distance}, "slow",	function(){ buttonSwitch("swap"); });
 				return newPage;
 			}
 			return currentPage;

@@ -14,29 +14,27 @@
 }
 .outerWrapper img 
 {
-	margin-right:40px; /* adjust for space between images */
+	margin-right:20px; /* adjust for space between images */
 	box-shadow:0 0 8px #000000; /* adjust box-shadow */
 	border:3px solid #fff; /* adjust border (gives polaroid effect) */
 	visibility:hidden;
 	float:left;	
 }
-.innerWrapper
-{
-	position:relative;
-}
 .leftButton, .rightButton
 {
-	left:18px; /* adjust distance from edge for buttons */
 	background-image:url('img/arrows.png'); /* you can set any image you want for this. keep in mind it's a sprite. */
 	width:28px; /* You may need to change this if you change the background image */
 	height:28px; /* You may need to change this if you change the background image */
 	visibility:hidden;
 	cursor:pointer;
-	background-position:left;
 	position:absolute;
+}
+.leftButton
+{
+	background-position:left;
+	left:18px; /* adjust distance from edge for buttons */
 }
 .rightButton
 {
 	background-position:right;
-	left:inherit;
 }
