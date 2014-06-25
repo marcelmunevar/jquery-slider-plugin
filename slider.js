@@ -18,6 +18,9 @@
 			var singleImgObject = imgObjects.first();
 			var imgMargin = parseFloat(singleImgObject.css("margin-right"));
 			
+			//last image does not need
+			imgObjects.last().css("margin-right","0");
+			
 			//widthPerTile
 			var widthPerTile = 0;			
 			widthPerTile += singleImgObject.width();
