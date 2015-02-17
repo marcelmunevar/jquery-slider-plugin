@@ -1,6 +1,5 @@
 .gallery
 {
-	height:138px; /* adjust height of gallery */
 	background-color:#fdfdfd; /* set background color of gallery */
 	border:1px solid #ccc; /* set desired border */
 	position:relative;
