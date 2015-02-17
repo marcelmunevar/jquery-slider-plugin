@@ -203,7 +203,7 @@
 		//when a user clicks a button
 		function pan(currentPage, numPages, pages, buttonSwitch, windowWidth, slideWidth, innerDiv, clipEdge)
 		{
-						
+			var distance;	
 			if(buttonSwitch())
 			{
 				//deactivate buttons
