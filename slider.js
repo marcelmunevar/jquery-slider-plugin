@@ -7,17 +7,24 @@
 				'Whitespace'	:	false,
 				'ButtonsCSS'	:	true
 			}, options);
-			
+            
 			//vars
 			var outerDiv = $(this);
 			var innerDiv = outerDiv.children();
 			var galleryDiv = outerDiv.parent();
 			var tiles = innerDiv.children();
 			var numButtons = tiles.length;
-			var imgObjects = tiles.children();
+			var imgObjects = tiles.find('img');
 			var singleImgObject = imgObjects.first();
 			var imgMargin = parseFloat(singleImgObject.css("margin-right"));
 			
+			//check for div containers and adjust css
+            if(tiles.is('div')){
+                tiles.css("float","left");
+                imgObjects.css("float","none");
+                imgObjects.siblings().css("margin-right",imgMargin);
+            }
+
 			//last image does not need
 			imgObjects.last().css("margin-right","0");
 			
@@ -203,7 +210,7 @@
 		//when a user clicks a button
 		function pan(currentPage, numPages, pages, buttonSwitch, windowWidth, slideWidth, innerDiv, clipEdge)
 		{
-			var distance;	
+            var distance;
 			if(buttonSwitch())
 			{
 				//deactivate buttons
